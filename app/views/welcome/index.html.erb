@@ -1,0 +1,11 @@
+<h1>Welcome to Potluck Planner!</h1>
+
+<% if logged_in? %>
+	<p>Logged in as <%= current_user.name %></p>
+	<p><%= link_to 'Logout', logout_path %></p>
+<% else %>
+	<p>
+	<%= link_to 'Login', login_path %>
+	<%= link_to 'Sign Up', new_user_path %>
+	</p>
+<% end %>
