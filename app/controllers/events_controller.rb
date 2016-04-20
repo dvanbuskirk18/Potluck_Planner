@@ -10,6 +10,9 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
+    @users = User.all
+
+    # Remove guest from @event.guests and remove event from user.attending_events
   end
 
   # GET /events/new
@@ -25,9 +28,11 @@ class EventsController < ApplicationController
   # POST /events.json
   def create
     @event = Event.new(event_params)
+    @event.host = current_user #host.id doesn't work
 
     respond_to do |format|
       if @event.save
+        current_user.hosted_events.append @event
         format.html { redirect_to @event, notice: 'Event was successfully created.' }
         format.json { render :show, status: :created, location: @event }
       else
@@ -40,6 +45,10 @@ class EventsController < ApplicationController
   # PATCH/PUT /events/1
   # PATCH/PUT /events/1.json
   def update
+    @guest = User.find(params[:event][:user_id])
+    @event.guests.append @guest
+    @guest.attending_events.append @event
+
     respond_to do |format|
       if @event.update(event_params)
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
@@ -62,14 +71,15 @@ class EventsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_event
-      @event = Event.find(params[:id])
-    end
+  
+  # Use callbacks to share common setup or constraints between actions.
+  def set_event
+    @event = Event.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def event_params
-      params.require(:event).permit(:name, :location, :date, :start_time, :end_time, :notes, 
-        addresses_attributes: [:street1, :street2, :city, :state, :zip_code, :country])
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def event_params
+    params.require(:event).permit(:name, :location, :date, :start_time, :end_time, :notes,
+      address_attributes: [:id, :street1, :street2, :city, :state, :zip_code, :country])
+  end
 end

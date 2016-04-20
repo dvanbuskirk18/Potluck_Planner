@@ -1,4 +1,53 @@
 <p id="notice"><%= notice %></p>
-
-<%= link_to 'Edit', edit_event_path(@event) %> |
-<%= link_to 'Back', events_path %>
+<!-- Check that event belongs to current user -->
+	<h1><%= @event.name %> Details:</h1>
+	</br>
+	<h3><%= @event.guests.length - 1 %> Guests Attending</h3>
+	<% unless @event.guests.empty? %>
+		<% @event.guests.each do |guest| %>
+		<table>
+			<tr>
+				<td><%= guest.name %></td>
+				<!-- Add guest's guests -->
+				<% if logged_in? && @event.host == current_user %>
+				<td><%= link_to 'Remove Guest' %></td> <!-- Remove guest from @event.guests and remove event from user.attending_events -->
+				<% end %>
+			</tr>
+		</table>
+		<% end %>
+	<% else %>
+		<p>There are no guests for this event.</p>
+	<% end %>
+	</br>
+	<% if logged_in? && @event.host == current_user %>
+		<%= render 'guest_form' %>
+	<% end %>
+	</br>
+	<h3>The Menu</h3>
+	<% unless @event.dishes.empty? %>
+		<% @event.dishes.each do |dish| %>
+			<table>
+				<tr>
+					<td><%= dish.name %></td>
+					<% if dish.user_id == @event.host.id %>
+					<td>Quantity requested: <%= dish.quantity %></td>
+						<% if logged_in? && current_user == @event.host %>
+						<td><%= link_to 'Edit Dish', edit_event_dish_path(@event, dish) %></td>
+						<td><%= link_to 'Remove from Menu', "/events/#{@event.id}/dishes/#{dish.user_id}", action: "delete" %></td>
+						<% end %>
+					<% else %>
+						<td><%= dish.user_id.name %> is bringing <%= dish.quantity %></td>
+					<% end %>
+				</tr>
+			</table>
+		<% end %>
+	<% else %>
+		<p>There are no dishes for this event.</p>
+	<% end %>
+	</br>
+	<% if logged_in? && @event.host == current_user %>
+	<%= link_to 'Add Dish to Menu', new_event_dish_path(@event) %>
+	<% end %>
+	</br>
+<%= link_to 'Edit Event', edit_event_path(@event) %> |
+<%= link_to "Back to #{current_user.name}'s Homepage", user_path %>

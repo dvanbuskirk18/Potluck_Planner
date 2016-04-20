@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   has_many :hosted_events, class_name: "Event", foreign_key: :event_id, through: :invitations 
   has_many :attending_events, class_name: "Event",  foreign_key: :event_id, through: :invitations
   has_many :dishes
-  has_many :dietary_restrictions
+  # has_many :dietary_restrictions
   validates :name, :password_hash, :email, :phone, presence: true
   validates :name, uniqueness: true
   validates :name, length: { minimum: 2, too_short: 'Name is too short (minimum is 2 characters)' }
@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   # validates :email, format: { with: /\S+@\w+.\w+/, message: 'please enter a valid email' }
   validate :phone_valid?
   validates_with EmailAddress::ActiveRecordValidator, field: :email
-  accepts_nested_attributes_for :dietary_restrictions
+  # accepts_nested_attributes_for :dietary_restrictions
 
   def name_valid?
     if name.scan(/\A[A-Z]/).empty?
@@ -51,5 +51,18 @@ class User < ActiveRecord::Base
   def password=(new_password)
     @password = Password.create(new_password)
     self.password_hash = @password
+  end
+
+  def attending
+    attending_all = self.attending_events
+    attending = []
+    attending_all.each do |event|
+      if event.host == self
+        next
+      else
+        attending << event
+      end
+    end
+    return attending
   end
 end

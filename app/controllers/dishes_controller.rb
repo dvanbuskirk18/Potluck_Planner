@@ -1,5 +1,6 @@
 class DishesController < ApplicationController
   before_action :set_dish, only: [:show, :edit, :update, :destroy]
+  before_action :set_event
 
   # GET /dishes
   # GET /dishes.json
@@ -25,11 +26,14 @@ class DishesController < ApplicationController
   # POST /dishes.json
   def create
     @dish = Dish.new(dish_params)
+    @event.dishes.append @dish
+    @dish.event_id = @event.id
+    @dish.user_id = current_user.id
 
     respond_to do |format|
       if @dish.save
-        format.html { redirect_to @dish, notice: 'Dish was successfully created.' }
-        format.json { render :show, status: :created, location: @dish }
+        format.html { redirect_to event_dish_path(@event, @dish), notice: 'Dish was successfully created.' }
+        format.json { render :show, status: :created, location: event_dish_path(@event, @dish) }
       else
         format.html { render :new }
         format.json { render json: @dish.errors, status: :unprocessable_entity }
@@ -42,8 +46,8 @@ class DishesController < ApplicationController
   def update
     respond_to do |format|
       if @dish.update(dish_params)
-        format.html { redirect_to @dish, notice: 'Dish was successfully updated.' }
-        format.json { render :show, status: :ok, location: @dish }
+        format.html { redirect_to event_dish_path(@event, @dish), notice: 'Dish was successfully updated.' }
+        format.json { render :show, status: :ok, location: event_dish_path(@event, @path) }
       else
         format.html { render :edit }
         format.json { render json: @dish.errors, status: :unprocessable_entity }
@@ -62,13 +66,19 @@ class DishesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_dish
-      @dish = Dish.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def dish_params
-      params.require(:dish).permit(:description, dietary_restrictions_attributes: [vegan, :vegetarian, :gluten, :lactose, :egg, :fish, :shellfish, :peanuts, :tree_nuts, :soy, :kosher, :halal, :notes])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_dish
+    @dish = Dish.find(params[:id])
+  end
+
+  def set_event
+    @event = Event.find(params[:event_id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def dish_params
+    params.require(:dish).permit(:name, :description, :quantity,
+                                         :servings)
+  end
 end

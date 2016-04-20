@@ -6,9 +6,8 @@ class CreateEvents < ActiveRecord::Migration
       t.references :address
       t.string :name
       t.string :location
-      t.string :date
-      t.string :start_time
-      t.string :end_time
+      t.datetime :start_time
+      t.datetime :end_time
       t.text :notes
 
       t.timestamps null: false

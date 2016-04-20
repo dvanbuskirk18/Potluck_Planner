@@ -3,5 +3,5 @@ class Invitation < ActiveRecord::Base
   belongs_to :host, class_name: "User"
   belongs_to :hosted_event, class_name: "Event", foreign_key: :event_id
   belongs_to :attending_event, class_name: "Event", foreign_key: :event_id
-  validates :rsvp, :total_guests, presence: true
+  # validates :rsvp, :total_guests, presence: true
 end

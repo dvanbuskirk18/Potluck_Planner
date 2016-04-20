@@ -9,7 +9,7 @@ class AddressesController < ApplicationController
   end
 
   def create
-    @address = Adress.new(address_params)
+    @address = Address.new(address_params)
 
     respond_to do |format|
       if @address.save
@@ -47,14 +47,15 @@ class AddressesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_address
-      @address = Address.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def address_params
-      params.require(:address).permit(:street1, :street2, :city, :state, :zip_code, :country)
-    end
-end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_address
+    @address = Address.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def address_params
+    params.require(:address).permit(:street1, :street2, :city, :state,
+                                    :zip_code, :country)
+  end
 end

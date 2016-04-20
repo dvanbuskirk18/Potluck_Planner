@@ -1,4 +1,33 @@
 <p id="notice"><%= notice %></p>
-
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<h1><%= @user.name %>'s Events</h1>
+<h3>Hosting:</h3>
+	<% if !@user.hosted_events.empty? %>
+		<% @user.hosted_events.each do |hosted| %>
+		<table>
+			<tr>
+				<td><%= link_to hosted.name, "/users/#{@user.id}/events/#{hosted.id}" %></td>
+			</tr>
+		<% end %>
+		</table>
+	<% else %>
+		<p>No events to show.</p>
+	<% end %>
+	<% if logged_in? && @user == current_user %>
+		<p><%= link_to 'Create New Event', "/users/#{@user.id}/events/new" %></p>
+	<% end %>
+</br>
+<h3>Attending:</h3>
+	<% if !@events_attending.empty? %>
+		<% @events_attending.each do |attending| %>
+		<table>
+			<tr>
+				<td><%= link_to attending.name, event_path %></td>
+			</tr>
+			<% end %>
+		</table>
+	<% else %>
+		<p>No events to show.</p>
+	<% end %>
+</br>
+<%= link_to 'Edit Profile', edit_user_path(@user) %> |
+<%= link_to 'Back to Users', users_path %>

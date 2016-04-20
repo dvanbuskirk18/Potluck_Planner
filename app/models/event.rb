@@ -5,12 +5,19 @@ class Event < ActiveRecord::Base
   has_one :address
   belongs_to :host, class_name: "User", foreign_key: :user_id
   accepts_nested_attributes_for :address
-  validates :name, :addres, :date, presence: true
+  accepts_nested_attributes_for :dishes
+  validates :name, :start_time, :end_time, presence: true
   validates :name, length: { minimum: 2, too_short: 'Event name is too short (minimum is 2 characters)' }
 
-  def location_valid?
+  def add_guest(event_params)
   end
 
-  def date_valid?
+  def dishes_needed
+    dishes_requested = self.host.dishes
+    dishes_needed = []
+    dishes_requested.each do |dish|
+      dishes_requested << dish if dish.user_id == self.host.id
+    end
+    return dishes_requested
   end
 end

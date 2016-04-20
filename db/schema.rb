@@ -48,7 +48,10 @@ ActiveRecord::Schema.define(version: 20160410111508) do
   create_table "dishes", force: :cascade do |t|
     t.integer  "event_id"
     t.integer  "user_id"
+    t.string   "name"
     t.text     "description"
+    t.string   "quantity"
+    t.string   "servings"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
@@ -59,9 +62,8 @@ ActiveRecord::Schema.define(version: 20160410111508) do
     t.integer  "address_id"
     t.string   "name"
     t.string   "location"
-    t.string   "date"
-    t.string   "start_time"
-    t.string   "end_time"
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.text     "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -70,10 +72,8 @@ ActiveRecord::Schema.define(version: 20160410111508) do
   create_table "invitations", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "event_id"
-    t.string   "rsvp"
-    t.string   "total_guests"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

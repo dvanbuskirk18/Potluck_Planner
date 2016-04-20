@@ -51,13 +51,14 @@ class DietaryRestrictionsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_dietary_restriction
-      @dietary_restriction = DietaryRestriction.find(params[:id])
-    end
+  
+  # Use callbacks to share common setup or constraints between actions.
+  def set_dietary_restriction
+    @dietary_restriction = DietaryRestriction.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def dietary_restriction_params
-      params.require(:dietary_restriction).permit(:vegan, :vegetarian, :gluten, :lactose, :egg, :fish, :shellfish, :peanuts, :tree_nuts, :soy, :kosher, :halal, :notes)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def dietary_restriction_params
+    params.require(:dietary_restriction).permit(:vegan, :vegetarian, :gluten, :lactose, :egg, :fish, :shellfish, :peanuts, :tree_nuts, :soy, :kosher, :halal, :notes)
+  end
 end

@@ -1,12 +1,24 @@
 Rails.application.routes.draw do
-  resources :dietary_restrictions
-  resources :dishes
-  resources :events
-  resources :users
+  # resources :dietary_restrictions
+  # resources :dishes
+  resources :events do
+    resources :dishes
+  end
+  resources :users do
+    resources :dishes, only: [:show]
+    
+  end
   root 'welcome#index'
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   delete '/logout' => 'sessions#destroy'
+  get '/users/:user_id/events/new' => 'events#new'
+  get '/users/:user_id/events/:id' => 'events#show'
+  post '/events/:event_id/users' => 'events#update'
+  # patch '/users/:user_id/events/:id' => 'event#update'
+  # get '/events/:event_id/dishes' => 'dishes#index'
+  # post '/events/:event_id/dishes' => 'dishes#create'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
