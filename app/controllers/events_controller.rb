@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: [:show, :edit, :update, :destroy]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :add_guest]
 
   # GET /events
   # GET /events.json
@@ -10,14 +10,43 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
-    @users = User.all
+    @possible_guests = @event.possible_guests
+  end
 
-    # Remove guest from @event.guests and remove event from user.attending_events
+  def add_guest
+    @event = Event.find(params[:id])
+    @guest = User.find(params[:event][:user_id])
+    @guest.attending_events.append @event
+    redirect_to event_path(@event), notice: "#{@guest.name} was successfully added to the guest list."
+  end
+
+  # POST /events/1/remove_guest?event_id=1&user_id=3
+  def remove_guest
+    @event = Event.find(params[:event_id])
+    @guest = User.find(params[:user_id])
+    @event.remove(@guest)
+    redirect_to event_path(@event), notice: "#{@guest.name} was successfully removed from the guest list."
+  end
+
+  def dish_form
+    @event = Event.find(params[:event_id])
+    @dish = Dish.find(params[:id])
+  end
+
+  # POST /events/1/bring_dish?dish_id=6&event_id=1
+  def bring_dish
+    @event = Event.find(params[:event_id])
+    @dish = Dish.find(params[:id])
+    @dish.update(description: params[:dish][:description], quantity: params[:dish][:quantity], servings: params[:dish][:servings] )
+    @event.bring(@dish, current_user)
+    @dish.decrement_quantity
+    redirect_to event_path(@event), notice: "You have successfully claimed a dish."
   end
 
   # GET /events/new
   def new
     @event = Event.new
+    @address = Address.new
   end
 
   # GET /events/1/edit
@@ -28,7 +57,8 @@ class EventsController < ApplicationController
   # POST /events.json
   def create
     @event = Event.new(event_params)
-    @event.host = current_user #host.id doesn't work
+    @event.create_address(event_params[:address_attributes])
+    @event.host = current_user
 
     respond_to do |format|
       if @event.save
@@ -45,10 +75,6 @@ class EventsController < ApplicationController
   # PATCH/PUT /events/1
   # PATCH/PUT /events/1.json
   def update
-    @guest = User.find(params[:event][:user_id])
-    @event.guests.append @guest
-    @guest.attending_events.append @event
-
     respond_to do |format|
       if @event.update(event_params)
         format.html { redirect_to @event, notice: 'Event was successfully updated.' }
@@ -71,15 +97,16 @@ class EventsController < ApplicationController
   end
 
   private
-  
+
   # Use callbacks to share common setup or constraints between actions.
   def set_event
     @event = Event.find(params[:id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
   def event_params
-    params.require(:event).permit(:name, :location, :date, :start_time, :end_time, :notes,
-      address_attributes: [:id, :street1, :street2, :city, :state, :zip_code, :country])
+    params.require(:event).permit(:name, :location, :date, :start_time,
+                                  :end_time, :notes, address_attributes:
+                                  [:id, :street1, :street2, :city, :state,
+                                    :zip_code, :country])
   end
 end

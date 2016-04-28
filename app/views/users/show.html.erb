@@ -1,8 +1,8 @@
 <p id="notice"><%= notice %></p>
 <h1><%= @user.name %>'s Events</h1>
 <h3>Hosting:</h3>
-	<% if !@user.hosted_events.empty? %>
-		<% @user.hosted_events.each do |hosted| %>
+	<% if !@events_hosting.empty? %>
+		<% @events_hosting.each do |hosted| %>
 		<table>
 			<tr>
 				<td><%= link_to hosted.name, "/users/#{@user.id}/events/#{hosted.id}" %></td>
@@ -21,7 +21,7 @@
 		<% @events_attending.each do |attending| %>
 		<table>
 			<tr>
-				<td><%= link_to attending.name, event_path %></td>
+				<td><%= link_to attending.name, event_path(attending) %></td>
 			</tr>
 			<% end %>
 		</table>

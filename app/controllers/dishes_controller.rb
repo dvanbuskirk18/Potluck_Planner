@@ -29,10 +29,11 @@ class DishesController < ApplicationController
     @event.dishes.append @dish
     @dish.event_id = @event.id
     @dish.user_id = current_user.id
+    @dish.quantity_needed = @dish.quantity_requested
 
     respond_to do |format|
       if @dish.save
-        format.html { redirect_to event_dish_path(@event, @dish), notice: 'Dish was successfully created.' }
+        format.html { redirect_to event_path(@event), notice: 'Dish was successfully created.' }
         format.json { render :show, status: :created, location: event_dish_path(@event, @dish) }
       else
         format.html { render :new }
@@ -46,7 +47,7 @@ class DishesController < ApplicationController
   def update
     respond_to do |format|
       if @dish.update(dish_params)
-        format.html { redirect_to event_dish_path(@event, @dish), notice: 'Dish was successfully updated.' }
+        format.html { redirect_to event_path(@event), notice: 'Dish was successfully updated.' }
         format.json { render :show, status: :ok, location: event_dish_path(@event, @path) }
       else
         format.html { render :edit }
@@ -60,7 +61,7 @@ class DishesController < ApplicationController
   def destroy
     @dish.destroy
     respond_to do |format|
-      format.html { redirect_to dishes_url, notice: 'Dish was successfully destroyed.' }
+      format.html { redirect_to event_path(@event), notice: 'Dish was successfully removed from menu.' }
       format.json { head :no_content }
     end
   end
@@ -78,7 +79,6 @@ class DishesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def dish_params
-    params.require(:dish).permit(:name, :description, :quantity,
-                                         :servings)
+    params.require(:dish).permit(:name, :description, :quantity_requested, :quantity_needed, :quantity, :servings, :user_name)
   end
 end

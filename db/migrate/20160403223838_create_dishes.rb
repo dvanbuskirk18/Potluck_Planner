@@ -7,6 +7,7 @@ class CreateDishes < ActiveRecord::Migration
       t.text :description
       t.string :quantity
       t.string :servings
+      t.string :user_name
 
       t.timestamps null: false
     end

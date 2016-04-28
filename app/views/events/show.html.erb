@@ -1,53 +1,88 @@
 <p id="notice"><%= notice %></p>
-<!-- Check that event belongs to current user -->
-	<h1><%= @event.name %> Details:</h1>
-	</br>
-	<h3><%= @event.guests.length - 1 %> Guests Attending</h3>
-	<% unless @event.guests.empty? %>
-		<% @event.guests.each do |guest| %>
+
+<h1><%= @event.name %> Details:</h1>
+<table>
+	<tr><td><b>Date: </b></td><td><%= @event.start_time.strftime("%A, %B %-d, %Y") %></td></tr>
+	<tr><td><b>Time: </b></td><td><%= @event.start_time.strftime("%-I:%M%P") %> - <%= @event.end_time.strftime("%-I:%M%P") %></td></tr>
+	<tr><td><b>Location: </b></td><td><%= @event.location %></td></tr>
+	<tr><td></td><td><%= @event.address.street1 %></td></tr>
+	<tr><td></td><td><%= @event.address.street2 %></td></tr>
+	<tr><td></td><td><%= @event.address.city %>, <%= @event.address.state%> <%= @event.address.zip_code %></td></tr>
+	<tr><td><b>Notes: </b></td></tr>
+	<tr><td><b>Guests: </b></td><td><%= @event.guests.length %></td></tr>
+</table>
+<% if logged_in? && @event.host.id == current_user.id %>
+	<p><%= link_to 'Edit Event', edit_event_path(@event) %></p>
+<% end %>
+</br>
+<h3>The Guest List</h3>
+	<% if @event.guests.empty? %>
+		<p>There are no guests for this event.</p>
+	<% else %>
 		<table>
+		<% @event.guests.each do |guest| %>
 			<tr>
-				<td><%= guest.name %></td>
-				<!-- Add guest's guests -->
-				<% if logged_in? && @event.host == current_user %>
-				<td><%= link_to 'Remove Guest' %></td> <!-- Remove guest from @event.guests and remove event from user.attending_events -->
+				<td><%= guest.name.upcase %>  
+				<% if guest.id == @event.host.id %>
+					(host)
+				<% end %>
+				<% unless guest.id == @event.host.id %>
+					<% if logged_in? && @event.host.id == current_user.id %>
+					<%= link_to 'Remove Guest', { :action => :remove_guest, :controller => 'events', :event_id => @event.id, :user_id => guest.id } %></td>
+					<% end %>
 				<% end %>
 			</tr>
-		</table>
+			<tr>
+				<% unless guest.dishes.empty? %>
+					<% guest.dishes.each do |dish| %>
+						<% unless dish.user_id == @event.host.id %>
+							<tr>
+								<td>&nbsp&nbsp<%= dish.name %>: <%= dish.description %> (Qty <%= dish.quantity%>)</td>
+							</tr>
+						<% end %>
+					<% end %>
+				<% end %>
+			</tr>
 		<% end %>
-	<% else %>
-		<p>There are no guests for this event.</p>
+		</table>
 	<% end %>
 	</br>
+
 	<% if logged_in? && @event.host == current_user %>
 		<%= render 'guest_form' %>
-	<% end %>
 	</br>
-	<h3>The Menu</h3>
-	<% unless @event.dishes.empty? %>
-		<% @event.dishes.each do |dish| %>
-			<table>
-				<tr>
-					<td><%= dish.name %></td>
-					<% if dish.user_id == @event.host.id %>
-					<td>Quantity requested: <%= dish.quantity %></td>
-						<% if logged_in? && current_user == @event.host %>
+	<% end %>
+
+<h3>The Dish List</h3>
+<% if @event.dishes.empty? %>
+	<p>There are no dishes for this event.</p>
+<% else %>
+	<% @event.dishes.each do |dish| %>
+		<table>
+			<tr>
+				<td><%= dish.name.upcase %></td>
+				<% if logged_in? %>
+				 	<% if @event.host == current_user %>
 						<td><%= link_to 'Edit Dish', edit_event_dish_path(@event, dish) %></td>
-						<td><%= link_to 'Remove from Menu', "/events/#{@event.id}/dishes/#{dish.user_id}", action: "delete" %></td>
-						<% end %>
+						<td><%= link_to 'Remove Dish', "/events/#{@event.id}/dishes/#{dish.id}", method: :delete %></td>
 					<% else %>
-						<td><%= dish.user_id.name %> is bringing <%= dish.quantity %></td>
+						<td><%= link_to 'Bring it!', "/events/#{@event.id}/dishes/#{dish.id}/bring_dish" %></td>
 					<% end %>
-				</tr>
-			</table>
-		<% end %>
-	<% else %>
-		<p>There are no dishes for this event.</p>
+				<% end %>
+ 			</tr>
+			<tr>
+				<td>&nbsp&nbspQuantity Requested = <%= dish.quantity_requested %> | </td>
+				<td>Quantity Needed = <%= dish.quantity_needed %></td>
+			</tr>
+			<tr></tr>
+		</table>
 	<% end %>
 	</br>
+<% end %>
 	<% if logged_in? && @event.host == current_user %>
-	<%= link_to 'Add Dish to Menu', new_event_dish_path(@event) %>
-	<% end %>
+		<%= link_to 'Add Dish to Menu', new_event_dish_path(@event) %>
 	</br>
+	<% end %>
+</br>
 <%= link_to 'Edit Event', edit_event_path(@event) %> |
 <%= link_to "Back to #{current_user.name}'s Homepage", user_path %>

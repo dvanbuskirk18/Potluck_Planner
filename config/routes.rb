@@ -3,7 +3,12 @@ Rails.application.routes.draw do
   # resources :dishes
   resources :events do
     resources :dishes
+    member do
+      get 'remove_guest'
+      post 'remove_guest'
+    end
   end
+    
   resources :users do
     resources :dishes, only: [:show]
     
@@ -14,11 +19,10 @@ Rails.application.routes.draw do
   delete '/logout' => 'sessions#destroy'
   get '/users/:user_id/events/new' => 'events#new'
   get '/users/:user_id/events/:id' => 'events#show'
-  post '/events/:event_id/users' => 'events#update'
-  # patch '/users/:user_id/events/:id' => 'event#update'
-  # get '/events/:event_id/dishes' => 'dishes#index'
-  # post '/events/:event_id/dishes' => 'dishes#create'
-
+  get '/events/:event_id/dishes/:id/bring_dish' => 'events#dish_form'
+  post '/events/:event_id/dishes/:id/bring_dish' => 'events#bring_dish'
+  post '/events/:id/add_guest' => 'events#add_guest'
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

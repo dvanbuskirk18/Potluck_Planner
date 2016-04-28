@@ -1,0 +1,40 @@
+<%= form_for([@event, @dish], url: "/events/#{@event.id}/dishes/#{@dish.id}/bring_dish", method: :post) do |f| %>
+	<!--<div class="field">
+		<%#= f.collection_select(:dish_id, @event.dishes, :id, :name, prompt: true) %>
+	</div>-->
+  <% if @dish.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@dish.errors.count, "error") %> prohibited this dish from being saved:</h2>
+
+      <ul>
+      <% @dish.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  	<div>
+  		<%#= f.hidden_field :event_id %>
+  		<%#= f.hidden_field :dish_id %>
+  		<%#= f.hidden_field :user_id %>
+  	</div>
+  	<div class="field">
+    	<%= f.label :name %> <%= @dish.name %>
+  	</div>
+  	<div class="field">
+    	<%= f.label :description %>
+    	<%= f.text_area :description %>
+  	</div>
+  	<div class="field">
+  		<p>Quantity Needed = <%= @dish.quantity_needed %></p>
+    	<%= f.label :quantity %>
+    	<%= f.text_field :quantity %>
+  	</div>
+  	<div class="field">
+    	<%= f.label :servings %>
+    	<%= f.text_field :servings %>
+  	</div>
+	<div class="actions">
+		<%= f.submit 'Bring Dish' %>
+	</div>
+<% end %>

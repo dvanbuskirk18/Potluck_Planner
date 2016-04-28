@@ -1,9 +1,9 @@
-<%= form_for(@event) do |f| %>
+<%= form_for(@event, url: "/events/#{@event.id}/add_guest", method: :post) do |f| %>
 	<div class="field">
-		<%= f.collection_select(:user_id, User.all, :id, :name) %>
+		<%= f.collection_select(:user_id, @possible_guests, :id, :name, {prompt: 'Please Select' }) %>
 	</div>
 
 	<div class="actions">
-		<%= f.submit %>
+		<%= f.submit 'Add Guest' %>
 	</div>
 <% end %>
