@@ -1,3 +1,4 @@
+# Handles http requests for Address model.
 class AddressesController < ApplicationController
   before_action :set_address, only: [:edit, :update, :destroy]
 

@@ -1,3 +1,4 @@
+# Handles http requests for DietaryRestriction Model; not currently implemented.
 class DietaryRestrictionsController < ApplicationController
   before_action :set_dietary_restriction, only: [:show, :edit, :update, :destroy]
 

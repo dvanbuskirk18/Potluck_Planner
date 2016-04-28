@@ -1,5 +1,6 @@
 require 'bcrypt'
 
+# Stores User information as host and/or as guest.
 class User < ActiveRecord::Base
   has_many :invitations
   has_many :hosted_events, class_name: 'Event', foreign_key: :event_id, through: :invitations
@@ -11,7 +12,6 @@ class User < ActiveRecord::Base
   validates :name, length: { minimum: 2, too_short: 'Name is too short (minimum is 2 characters)' }
   validates :password_hash, length: { minimum: 5, too_short: 'Password is too short (minimum is 5 characters)' }
   validate :name_valid?
-  # validate :email_valid?
   # validates :email, format: { with: /\S+@\w+.\w+/, message: 'please enter a valid email' }
   validate :phone_valid?
   validates_with EmailAddress::ActiveRecordValidator, field: :email
@@ -19,21 +19,6 @@ class User < ActiveRecord::Base
 
   def name_valid?
     errors.add(:name, 'Name is not capitalized') if name.scan(/\A[A-Z]/).empty?
-  end
-
-  def email_valid?
-    if email.scan(/\@/).length != 1
-      errors.add(:email, 'Email needs one @ symbol')
-    end
-    if email.scan(/\w\@\w/).empty?
-      errors.add(:email, 'Email needs at least one character before and after the @ symbol')
-    end
-    if email.scan(/\w\.\w/).empty?
-      errors.add(:email, 'Email needs at least one character before and after the period')
-    end
-    if email.scan(/\@\w+\./).empty?
-      errors.add(:email, 'Email needs to have an @ symbol followed by at least one character and a period')
-    end
   end
 
   def phone_valid?

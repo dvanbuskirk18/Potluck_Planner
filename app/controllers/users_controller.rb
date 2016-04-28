@@ -1,3 +1,4 @@
+# Handles http requests for User model.
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 

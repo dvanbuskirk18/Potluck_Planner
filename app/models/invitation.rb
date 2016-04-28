@@ -1,3 +1,4 @@
+# Join table model for User and Event.
 class Invitation < ActiveRecord::Base
   belongs_to :guest, class_name: 'User', foreign_key: :user_id
   belongs_to :host, class_name: 'User'

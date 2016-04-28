@@ -66,7 +66,9 @@
 						<td><%= link_to 'Edit Dish', edit_event_dish_path(@event, dish) %></td>
 						<td><%= link_to 'Remove Dish', "/events/#{@event.id}/dishes/#{dish.id}", method: :delete %></td>
 					<% else %>
+						<% unless dish.quantity_needed == 0 %>
 						<td><%= link_to 'Bring it!', "/events/#{@event.id}/dishes/#{dish.id}/bring_dish" %></td>
+						<% end %>
 					<% end %>
 				<% end %>
  			</tr>

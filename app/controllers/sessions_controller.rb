@@ -1,3 +1,4 @@
+# Handles http request for user authentication and login/logout.
 class SessionsController < ApplicationController
   def new
   end

@@ -1,3 +1,4 @@
+# Stores Event information including guest and dish lists.
 class Event < ActiveRecord::Base
   has_many :invitations
   has_many :guests, class_name: 'User', through: :invitations
@@ -9,6 +10,7 @@ class Event < ActiveRecord::Base
   validates :name, :start_time, :end_time, presence: true
   validates :name, length: { minimum: 2, too_short: 'Event name is too short (minimum is 2 characters)' }
 
+  # Returns a list of possible guests (not the host, not already attending) for guest_form.
   def possible_guests
     guests.each do |guest|
       @possible = User.all.reject { |user| user.id == guest.id || user.id == host.id }
@@ -16,12 +18,14 @@ class Event < ActiveRecord::Base
     @possible
   end
 
+  # Helper method for event#remove_guest.
   def remove(guest)
     remove_dishes(guest)
     guests.delete(guest)
     guest.attending_events.delete(self)
   end
 
+  # Helper method for remove method.
   def remove_dishes(guest)
     guest.dishes.each do |dish|
       dish.update(user_id: host.id) if dish.user_id == guest.id
@@ -36,12 +40,5 @@ class Event < ActiveRecord::Base
     dishes_requested.each do |dish|
       dishes_needed << dish if dish.user_id == host.id
     end
-  end
-
-  def bring(dish, current_user)
-    dish.user_id = current_user.id
-    dish.user_name = User.find(current_user.id).name
-    dish.save
-    current_user.dishes << dish
   end
 end

@@ -1,3 +1,4 @@
+# Handles http requests for Dish model.
 class DishesController < ApplicationController
   before_action :set_dish, only: [:show, :edit, :update, :destroy]
   before_action :set_event
@@ -27,8 +28,6 @@ class DishesController < ApplicationController
   def create
     @dish = Dish.new(dish_params)
     @event.dishes.append @dish
-    @dish.event_id = @event.id
-    @dish.user_id = current_user.id
     @dish.quantity_needed = @dish.quantity_requested
 
     respond_to do |format|

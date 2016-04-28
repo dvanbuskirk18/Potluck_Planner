@@ -1,3 +1,4 @@
+# Handles http requests for Event model.
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy, :add_guest]
 
@@ -40,9 +41,8 @@ class EventsController < ApplicationController
     @dish.update(dish_params)
     @guest = User.find(current_user.id)
     @guest.dishes << @dish
-    # @event.bring(@dish, current_user)
     @dish.decrement_quantity
-    redirect_to event_path(@event), notice: "You have successfully claimed a dish."
+    redirect_to event_path(@event), notice: 'You have successfully claimed a dish.'
   end
 
   # GET /events/new
@@ -109,12 +109,12 @@ class EventsController < ApplicationController
     params.require(:event).permit(:name, :location, :date, :start_time,
                                   :end_time, :notes, address_attributes:
                                   [:id, :street1, :street2, :city, :state,
-                                    :zip_code, :country])
+                                   :zip_code, :country])
   end
 
   def dish_params
-    params.require(:dish).permit(:event_id, :user_id, :name, :description, 
-                                :quantity, :servings, :user_name, 
-                                :quantity_needed, :quantity_requested)
+    params.require(:dish).permit(:event_id, :user_id, :name, :description,
+                                 :quantity, :servings, :user_name,
+                                 :quantity_needed, :quantity_requested)
   end
 end
