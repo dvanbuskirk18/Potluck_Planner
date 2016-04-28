@@ -34,6 +34,8 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
+    # @user.password = params[:user][:password_hash]
+    # @user.password = params[:password]
 
     respond_to do |format|
       if @user.save

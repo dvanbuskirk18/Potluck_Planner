@@ -10,7 +10,7 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.json
   def show
-    @possible_guests = @event.possible_guests
+    @possible = @event.possible_guests
   end
 
   def add_guest
@@ -37,8 +37,10 @@ class EventsController < ApplicationController
   def bring_dish
     @event = Event.find(params[:event_id])
     @dish = Dish.find(params[:id])
-    @dish.update(description: params[:dish][:description], quantity: params[:dish][:quantity], servings: params[:dish][:servings] )
-    @event.bring(@dish, current_user)
+    @dish.update(dish_params)
+    @guest = User.find(current_user.id)
+    @guest.dishes << @dish
+    # @event.bring(@dish, current_user)
     @dish.decrement_quantity
     redirect_to event_path(@event), notice: "You have successfully claimed a dish."
   end
@@ -108,5 +110,11 @@ class EventsController < ApplicationController
                                   :end_time, :notes, address_attributes:
                                   [:id, :street1, :street2, :city, :state,
                                     :zip_code, :country])
+  end
+
+  def dish_params
+    params.require(:dish).permit(:event_id, :user_id, :name, :description, 
+                                :quantity, :servings, :user_name, 
+                                :quantity_needed, :quantity_requested)
   end
 end

@@ -29,7 +29,7 @@
     <%= f.label 'Event Location' %>
     <%= f.text_field :location %>
   </div>
-  <%= f.fields_for @event.address do |address_form| %>
+  <%= f.fields_for :address do |address_form| %>
     <div class="field">
       <%= address_form.label 'Street 1' %>
       <%= address_form.text_field :street1 %>

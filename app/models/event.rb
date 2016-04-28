@@ -10,12 +10,10 @@ class Event < ActiveRecord::Base
   validates :name, length: { minimum: 2, too_short: 'Event name is too short (minimum is 2 characters)' }
 
   def possible_guests
-    @possible_guests = []
-    User.all.each do |user|
-      guests.each do |guest|
-        @possible_guests << user unless user.id == guest.id || user.id == host.id
-      end
+    guests.each do |guest|
+      @possible = User.all.reject { |user| user.id == guest.id || user.id == host.id }
     end
+    @possible
   end
 
   def remove(guest)
@@ -43,6 +41,7 @@ class Event < ActiveRecord::Base
   def bring(dish, current_user)
     dish.user_id = current_user.id
     dish.user_name = User.find(current_user.id).name
+    dish.save
     current_user.dishes << dish
   end
 end
