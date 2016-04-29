@@ -7,6 +7,7 @@ class AddressesController < ApplicationController
   end
 
   def edit
+    @event = Event.new
   end
 
   def create

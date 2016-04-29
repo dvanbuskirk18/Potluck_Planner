@@ -8,6 +8,9 @@ class EventsController < ApplicationController
     @events = Event.all
   end
 
+  def new
+  end
+
   # GET /events/1
   # GET /events/1.json
   def show
@@ -48,7 +51,6 @@ class EventsController < ApplicationController
   # GET /events/new
   def new
     @event = Event.new
-    @address = Address.new
   end
 
   # GET /events/1/edit
@@ -59,7 +61,6 @@ class EventsController < ApplicationController
   # POST /events.json
   def create
     @event = Event.new(event_params)
-    @event.create_address(event_params[:address_attributes])
     @event.host = current_user
 
     respond_to do |format|
@@ -107,9 +108,8 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(:name, :location, :date, :start_time,
-                                  :end_time, :notes, address_attributes:
-                                  [:id, :street1, :street2, :city, :state,
-                                   :zip_code, :country])
+                                  :end_time, :notes, :street1, :street2,
+                                  :city, :state, :zip_code, :country)
   end
 
   def dish_params

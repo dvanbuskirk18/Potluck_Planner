@@ -8,11 +8,9 @@ Rails.application.routes.draw do
       post 'remove_guest'
     end
   end
+
+  resources :users
     
-  resources :users do
-    resources :dishes, only: [:show]
-    
-  end
   root 'welcome#index'
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
