@@ -51,12 +51,12 @@ ActiveRecord::Schema.define(version: 20160429011029) do
     t.string   "name"
     t.text     "description"
     t.string   "user_name"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
     t.integer  "quantity_needed"
     t.integer  "quantity_requested"
     t.integer  "quantity"
     t.integer  "servings"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
   create_table "events", force: :cascade do |t|

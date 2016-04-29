@@ -5,9 +5,11 @@ class CreateDishes < ActiveRecord::Migration
       t.references :user
       t.string :name
       t.text :description
-      t.string :quantity
-      t.string :servings
       t.string :user_name
+      t.integer :quantity_needed
+      t.integer :quantity_requested
+      t.integer :quantity
+      t.integer :servings
 
       t.timestamps null: false
     end
